@@ -1,0 +1,115 @@
+{% extends 'shop/basic.html' %}
+{% block title %}Crack Cart Tracker{% endblock %}
+{% block css %}
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1; 
+        }
+
+        .footer {
+            background: black;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+{% endblock%}
+{% block body %}
+<div class="container">
+  <div class="col my-4">
+    <h2>Enter Your Order Id and Email address to track your order</h2>
+
+    <!-- ① give the form an id so jQuery can catch submit -->
+    <form id="trackerForm" method="post" action="/shop/tracker/">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="orderId">Order Id</label>
+          <input type="text" class="form-control" id="orderId" name="orderId" placeholder="Order Id">
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+        </div>
+      </div>
+     <button type="submit" class="btn btn-primary" style="margin-top: 14px;">Track Order</button>
+
+    </form>
+  </div>
+
+  <div class="col my-4">
+    <h2>Your Order Status :</h2>
+    <ul class="list-group" id="items">
+      <li class="list-group-item">Enter your Order ID and Email, then click “Track Order”</li>
+    </ul>
+    <h2>Your Order Details :</h2>
+        <div class="my-4">
+            <ul class="list-group" id="citems">
+                
+            </ul>
+        </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+/* ② intercept the form submission */
+$('#trackerForm').submit(function(event) {
+    $('#items').empty();
+    var formData = {
+        'orderId': $('input[name=orderId]').val(),
+        'email': $('input[name=email]').val(),
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    $.ajax({
+            type: 'POST',
+            url: '/shop/tracker/',
+            data: formData,
+            encode: true
+        })
+        .done(function(data) {
+            console.log(data)
+            data = JSON.parse(data);
+            updates = data[0];
+            if (updates.length > 0 & updates != {}) {
+                for (i = 0; i < updates.length; i++) {
+                    let text = updates[i]['text'];
+                    let time = updates[i]['time'];
+                    mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${text}
+                    <span class="badge bg-primary">${time}</span>
+                </li>`
+                    $('#items').append(mystr);
+                }
+            } else {
+                mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    Sorry, We are not able to fetch this order id and email. Make sure to type correct order Id and email</li>`
+                $('#items').append(mystr);
+            }
+            // Fill in the order details
+            cart = JSON.parse(data[1]);
+            console.log(cart);
+            for (item in cart) {
+                let name = cart[item][1];
+                let qty = cart[item][0];
+                mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="badge bg-primary">${qty}</span>
+                </li>`
+                $('#citems').append(mystr);
+            }
+        });
+    event.preventDefault();
+});
+</script>
+{% endblock %}

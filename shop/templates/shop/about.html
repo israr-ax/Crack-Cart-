@@ -1,0 +1,25 @@
+{% extends 'shop/basic.html'%}
+{% block title %} About Us - Crack Cart {% endblock %}
+{% block css %}
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1; 
+        }
+
+        .footer {
+            background: black;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+{% endblock  %}
+{% block body %} This Is About Page. {% endblock %}

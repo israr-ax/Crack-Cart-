@@ -1,0 +1,134 @@
+{% extends 'shop/basic.html'%}
+{% block title %} Contact Us - Crack Cart {% endblock %}
+{% block css %} 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+  
+      body {
+        background: linear-gradient(to bottom, #e0f7e9, #d4edda);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+  
+      /* Main section */
+  
+      /* Contact Form */
+      .contact-container {
+        
+        justify-content: center;
+  text-align: center;
+  display: container;
+  align-items: center;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 600px;
+        animation: fadeIn 1s ease;
+      }
+
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+  
+      .contact-container h1 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+      }
+  
+      .contact-container h1 i {
+        color: #4CAF50;
+      }
+  
+      .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+  
+      .contact-form input, .contact-form textarea {
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        resize: none;
+        transition: 0.3s;
+        width: 100%;
+      }
+  
+      .contact-form input:focus, .contact-form textarea:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 10px #a5d6a7;
+      }
+  
+      .contact-form button {
+        padding: 15px;
+        background: #000;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+  
+      .contact-form button:hover {
+        background: #333;
+      }
+    .box{   
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        padding-top: 65px;
+        
+    }
+  
+      @media (max-width: 600px) {
+        .contact-container {
+          padding: 20px;
+        }
+      }
+{% endblock %}
+{% block body %}
+<div class="box">    
+<div class="contact-container ">
+        <form action="/shop/contact/" method="post" > {% csrf_token %}
+            <h1> Let's Chat</h1>
+            <div class="contact-form">
+                <input type="text" id="name" name='name' placeholder="Your Name" required>
+                <input type="email" id="email" name='email'placeholder="Your Email" required>
+                <textarea rows="5" id="des" name='des' placeholder="Your Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </div>
+        </form>    
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+
+{% if thank %}
+<script>
+    alert("Thank you for contacting us. We'll get back to you soon.");
+    window.location.href = "/shop";
+</script>
+{% endif %}
+
+
+{% endblock  %}
+{% block footer %}
+
+{% endblock  %}

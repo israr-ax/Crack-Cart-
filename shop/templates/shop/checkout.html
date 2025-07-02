@@ -1,0 +1,182 @@
+{% extends 'shop/basic.html'%}
+{% block title %} Checkout - Crack Cart{% endblock %}
+{% block css %}
+<style>
+body {
+  background-color: #f4f6f8;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-in;
+}
+
+h2 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.breadcrumb {
+  background-color: #eef3f7;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.badge {
+  background: #007bff;
+  border: solid #3a4eba 1px;
+  border-radius: 20.65em;
+  color: white;
+  padding: 0.5rem 1rem;
+}
+
+.list-group-item {
+  background: #f8f9fa;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  transition: transform 0.2s;
+}
+
+.list-group-item:hover {
+  transform: translateX(5px);
+}
+
+.form-control {
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 10px #a5d6a7;
+}
+
+button.btn-primary {
+  background-color: #28a745;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+    <div class="col my-4">
+        <h2>Step 1 - Crack Cart Express Checkout - Review Your Cart Items</h2>
+        <div class="my-4">
+            <ul class="list-group" id="items">
+            </ul>
+            <nav aria-label="breadcrumb">
+  <ol class="breadcrumb mt-3">
+    <li class="breadcrumb-item active" aria-current="page">Your Total Bill is <b> RS: <span id="totalPrice">0</span> </b>. Enter your details below and place your Order!
+</li>
+  </ol>
+</nav>
+      
+        </div>
+    </div>
+    <div class="col my-4">
+       <form action="/shop/checkout/" method="post"> {% csrf_token %}
+        <h2>Step 2 - Enter Address & Other Details:</h2>
+            <input type="hidden" name="itemsJson" id="itemsJson">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="name">Name</label>
+                    <input type="name" class="form-control" id="name" name="name" placeholder="Name">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" id="address" name="address" placeholder="1234 Main St">
+            </div>
+            <div class="form-group">
+                <label for="addres2">Address line 2</label>
+                <input type="text" class="form-control" id="address2" name="address2" placeholder="Apartment, studio, or floor">
+
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" name="city">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="state">State</label>
+                    <input type="text" class="form-control" id="state" name="state">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="zip_code">Zip/Postal Code</label>
+                    <input type="text" class="form-control" id="zip_code" name="zipcode">
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="phone">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone">
+            </div>
+            <button type="submit" class="btn btn-primary my-4">Place Order</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+console.log(cart);
+var sum = 0;
+var totalPrice = 0;
+if ($.isEmptyObject(cart)) {
+    //if object is empty
+    mystr = `<p>Your cart is empty, please add some items to your cart before checking out!</p>`
+    $('#items').append(mystr);
+} else {
+    for (item in cart) {
+        let name = cart[item][1];
+        let qty = cart[item][0];
+        let itemPrice = cart[item][2];
+        sum = sum + qty;
+        totalPrice = totalPrice + qty* itemPrice;
+        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="badge badge-primary badge-pill">${qty}</span>
+                </li>`
+        $('#items').append(mystr);
+    }
+}
+document.getElementById('cart').innerHTML = sum;
+document.getElementById('totalPrice').innerHTML = totalPrice;
+$('#itemsJson').val(JSON.stringify(cart));
+{% if thank %}
+alert("Thanks for ordering with us. Your order id is {{id}}. Use it to track your order using our order tracker")
+localStorage.clear();
+document.location="/shop";
+{%endif%}
+</script>
+{% endblock %}
