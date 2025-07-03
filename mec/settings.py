@@ -14,13 +14,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ht4y&1_$!700uy-hzkt=hb0b-+#qc8o-4i%$c$7i*iu&6-wjf9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['iam06x.pythonanywhere.com']  # Use your PythonAnywhere domain
+ALLOWED_HOSTS = ['*']  # Use your PythonAnywhere domain
 
 # Application definition
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',  # for serving static files
     'shop.apps.ShopConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,7 +32,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # static file middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
